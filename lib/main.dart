@@ -2,7 +2,7 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Currently at: https://codelabs.developers.google.com/codelabs/flutter-codelab-first#6
+// Currently at: https://codelabs.developers.google.com/codelabs/flutter-codelab-first#8
 
 void main() {
   // Tells Flutter to run the app defined in MyApp
@@ -73,6 +73,47 @@ class MyAppState extends ChangeNotifier {
       favourites.add(current);
     }
     notifyListeners();
+  }
+
+  void clearFavourites() {
+    favourites = <WordPair>[];
+    notifyListeners();
+  }
+}
+
+class FavouritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    var favourites = appState.favourites;
+
+    if (favourites.isEmpty) {
+      return Center(
+        child: Text('No favorites yet.'),
+      );
+    }
+
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          ElevatedButton.icon(
+            onPressed: () {
+              appState.clearFavourites();
+            },
+            icon: Icon(Icons.delete),
+            label: Text('Clear all favourites'),
+          ),
+          Padding(
+              padding: const EdgeInsets.all(20),
+              child: Text("You have " "${favourites.length} favourites:")),
+          for (WordPair favourite in favourites)
+            ListTile(
+                leading: Icon(Icons.favorite),
+                title: Text(favourite.asLowerCase))
+        ],
+      ),
+    );
   }
 }
 
@@ -157,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavouritesPage();
         break;
       default:
         throw UnimplementedError("No widget for $selectedIndex");
@@ -273,6 +314,43 @@ class BigCard extends StatelessWidget {
       color: theme.colorScheme.primary,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel: "${pair.first} ${pair.second}",
+        ),
+      ),
+    );
+  }
+}
+
+class SmallCard extends StatelessWidget {
+  const SmallCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    /*
+      Accessing App's font theme.
+      Look at the description of displayMedium for more info.
+
+      copyWith returns a copy of that text style with the changes defined.
+        In this case, we're just changing the text colour.
+        onPrimary indicating that it's the colour ontop of the Primary colour.
+    */
+    final style = theme.textTheme.bodyLarge!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
         child: Text(
           pair.asLowerCase,
           style: style,
