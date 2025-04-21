@@ -3,11 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  // Tells Flutter to run the app defined in MyApp
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  /*
+    Extends StatelessWidget (Widgets: https://www.youtube.com/watch?v=wE7khGHVkYY)
+    MyApp 
+    Creates the App-Wide state, 
+    Names the app, 
+    Defines the visual theme,
+    and sets the "home" widget (The starting point of the App)
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +27,8 @@ class MyApp extends StatelessWidget {
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: Color.fromRGBO(0, 255, 0, 1.0)),
         ),
         home: MyHomePage(),
       ),
@@ -26,26 +37,120 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
+  /*
+    Defines the App's State.
+    ChangeNotifier being one of the ways to manage States.
+
+    MyAppState defines the data the app needs to function.
+    At the beginning this only contains one random word pair.
+
+    Extending ChangeNotifier allows this State to notify others about it's own changes.
+    For example, if the word pair changes, some widgets in the app need to know.
+
+    The state is created and provided to the whole app using ChangeNotifierProvider (See in MyApp),
+      this allows any widget in the app to get hold of the state.
+
+  */
   var current = WordPair.random();
+  void getNext() {
+    // Get's a new WordPair
+    current = WordPair.random();
+    /* 
+      A method of ChangeNotifier, 
+        that ensures anyone watching MyAppState is notified.
+    */
+    notifyListeners();
+  }
+
+  var favourites = <WordPair>[];
+
+  void toggleFavourites() {
+    if (favourites.contains(current)) {
+      favourites.remove(current);
+    } else {
+      favourites.add(current);
+    }
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatelessWidget {
+  /*
+    build() is called every time the widget's circumstances change,
+     so that the widget is always up to date.
+
+    MyHomePage tracks changes to the app's current state using the 'watch' method.
+
+    Every build() method must return a widget or a nested tree of widgets.
+    In this case, the top level widget is a Scaffold widget.
+
+    Column is one of the mostbasic layout widgets, 
+      it takes any number of children and puts them in a column from top to bottom.
+      By default the children will be placed at the top but can be customised.
+
+    Text is a widget that displays Text.
+    The second Text widget takes the appState's only member 'current',
+      which is a WordPair.
+      WordPair can also be used with asPascalCase, asSnakeCase and asLowerCase.
+
+  */
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
+    var pair = appState.current;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Text('A random AWESOME idea:'),
-          Text(appState.current.asLowerCase),
-          ElevatedButton(
-            onPressed: () {
-              print("button pressed");
-            },
-            child: Text("Next"),
-          )
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            BigCard(pair: pair),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+              },
+              child: Text("Next"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    /*
+      Accessing App's font theme.
+      Look at the description of displayMedium for more info.
+
+      copyWith returns a copy of that text style with the changes defined.
+        In this case, we're just changing the text colour.
+        onPrimary indicating that it's the colour ontop of the Primary colour.
+    */
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel: "${pair.first} ${pair.second}",
+        ),
       ),
     );
   }
