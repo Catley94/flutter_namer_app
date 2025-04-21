@@ -66,7 +66,7 @@ class MyAppState extends ChangeNotifier {
 
   var favourites = <WordPair>[];
 
-  void toggleFavourites() {
+  void toggleFavourite() {
     if (favourites.contains(current)) {
       favourites.remove(current);
     } else {
@@ -76,26 +76,133 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  /*
-    build() is called every time the widget's circumstances change,
-     so that the widget is always up to date.
+// class MyHomePage extends StatelessWidget {
+//   /*
+//     build() is called every time the widget's circumstances change,
+//      so that the widget is always up to date.
 
-    MyHomePage tracks changes to the app's current state using the 'watch' method.
+//     MyHomePage tracks changes to the app's current state using the 'watch' method.
 
-    Every build() method must return a widget or a nested tree of widgets.
-    In this case, the top level widget is a Scaffold widget.
+//     Every build() method must return a widget or a nested tree of widgets.
+//     In this case, the top level widget is a Scaffold widget.
 
-    Column is one of the mostbasic layout widgets, 
-      it takes any number of children and puts them in a column from top to bottom.
-      By default the children will be placed at the top but can be customised.
+//     Column is one of the mostbasic layout widgets,
+//       it takes any number of children and puts them in a column from top to bottom.
+//       By default the children will be placed at the top but can be customised.
 
-    Text is a widget that displays Text.
-    The second Text widget takes the appState's only member 'current',
-      which is a WordPair.
-      WordPair can also be used with asPascalCase, asSnakeCase and asLowerCase.
+//     Text is a widget that displays Text.
+//     The second Text widget takes the appState's only member 'current',
+//       which is a WordPair.
+//       WordPair can also be used with asPascalCase, asSnakeCase and asLowerCase.
 
-  */
+//   */
+//   @override
+//   Widget build(BuildContext context) {
+//     var appState = context.watch<MyAppState>();
+//     var pair = appState.current;
+
+//     IconData icon;
+//     if (appState.favourites.contains(pair)) {
+//       icon = Icons.favorite;
+//     } else {
+//       icon = Icons.favorite_border;
+//     }
+
+//     return Scaffold(
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             BigCard(pair: pair),
+//             SizedBox(height: 10),
+//             Row(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 ElevatedButton.icon(
+//                   onPressed: () {
+//                     appState.toggleFavourites();
+//                   },
+//                   icon: Icon(icon),
+//                   label: Text("Like"),
+//                 ),
+//                 SizedBox(width: 40),
+//                 ElevatedButton(
+//                   onPressed: () {
+//                     appState.getNext();
+//                   },
+//                   child: Text("Next"),
+//                 ),
+//               ],
+//             )
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = GeneratorPage();
+        break;
+      case 1:
+        page = Placeholder();
+        break;
+      default:
+        throw UnimplementedError("No widget for $selectedIndex");
+        break;
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                ],
+                selectedIndex: selectedIndex,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    selectedIndex = value;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -108,34 +215,32 @@ class MyHomePage extends StatelessWidget {
       icon = Icons.favorite_border;
     }
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            BigCard(pair: pair),
-            SizedBox(height: 10),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    appState.toggleFavourites();
-                  },
-                  icon: Icon(icon),
-                  label: Text("Like"),
-                ),
-                SizedBox(width: 40),
-                ElevatedButton(
-                  onPressed: () {
-                    appState.getNext();
-                  },
-                  child: Text("Next"),
-                ),
-              ],
-            )
-          ],
-        ),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BigCard(pair: pair),
+          SizedBox(height: 10),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  appState.toggleFavourite();
+                },
+                icon: Icon(icon),
+                label: Text('Like'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  appState.getNext();
+                },
+                child: Text('Next'),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
