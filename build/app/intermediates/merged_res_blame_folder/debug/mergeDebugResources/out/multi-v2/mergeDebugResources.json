@@ -34,7 +34,7 @@
             "outputFile": "com.example.namer_app-debug-26:/values-night-v8_values-night-v8.arsc.flat",
             "map": [
                 {
-                    "source": "/home/sam/flutter_projects/namer_app/android/app/src/main/res/values-night/styles.xml",
+                    "source": "/home/sam/Documents/GitHub/flutter_namer_app/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -250,25 +250,6 @@
                     }
                 },
                 {
-                    "source": "/home/sam/flutter_projects/namer_app/android/app/src/main/res/values/styles.xml",
-                    "from": {
-                        "startLines": "3,14",
-                        "startColumns": "4,4",
-                        "startOffsets": "173,818",
-                        "endLines": "7,16",
-                        "endColumns": "12,12",
-                        "endOffsets": "476,982"
-                    },
-                    "to": {
-                        "startLines": "155,159",
-                        "startColumns": "4,4",
-                        "startOffsets": "7894,8075",
-                        "endLines": "158,161",
-                        "endColumns": "12,12",
-                        "endOffsets": "8070,8239"
-                    }
-                },
-                {
                     "source": "/home/sam/.gradle/caches/8.10.2/transforms/1b91be3af319ede480d7185430690ee1/transformed/lifecycle-viewmodel-2.7.0/res/values/values.xml",
                     "from": {
                         "startLines": "2",
@@ -336,6 +317,25 @@
                         "startOffsets": "7229",
                         "endColumns": "82",
                         "endOffsets": "7307"
+                    }
+                },
+                {
+                    "source": "/home/sam/Documents/GitHub/flutter_namer_app/android/app/src/main/res/values/styles.xml",
+                    "from": {
+                        "startLines": "3,14",
+                        "startColumns": "4,4",
+                        "startOffsets": "173,818",
+                        "endLines": "7,16",
+                        "endColumns": "12,12",
+                        "endOffsets": "476,982"
+                    },
+                    "to": {
+                        "startLines": "155,159",
+                        "startColumns": "4,4",
+                        "startOffsets": "7894,8075",
+                        "endLines": "158,161",
+                        "endColumns": "12,12",
+                        "endOffsets": "8070,8239"
                     }
                 }
             ]
